@@ -13,13 +13,13 @@ with open("advent_2024/1_input.txt") as f:
 left.sort()
 right.sort()
 
-distance: int = sum(abs(a-b) for a, b in zip(left, right))
+distance: int = sum(abs(a - b) for a, b in zip(left, right))
 print(distance)
 
 right_counter: Counter = Counter(right)
 
 similarity: int = 0
 for number in left:
-    similarity += right_counter.get(number,0) * number
+    similarity += right_counter.get(number, 0) * number
 
 print(similarity)
