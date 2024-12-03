@@ -13,7 +13,7 @@ with open("advent_2024/1_input.txt") as f:
 left.sort()
 right.sort()
 
-distance: int = sum(abs(a - b) for a, b in zip(left, right))
+distance: int = sum(abs(a - b) for a, b in zip(left, right, strict=False))
 print(distance)
 
 right_counter: Counter = Counter(right)
