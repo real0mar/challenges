@@ -13,7 +13,7 @@ def evaluate_safety(report: list[int]) -> bool:
 
 def evaluate_safety_dampener(report: list[int]) -> bool:
     return evaluate_safety(report) or any(
-        evaluate_safety(report[:i] + report[i + 1:]) for i in range(len(report))
+        evaluate_safety(report[:i] + report[i + 1 :]) for i in range(len(report))
     )
 
 
