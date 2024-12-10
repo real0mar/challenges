@@ -1,52 +1,68 @@
 from pathlib import Path
 
+def parse_input(file_path):
+    with open(file_path) as file:
+        lines = [line.rstrip() for line in file]
+    obstacle_set = set()
+    start_x, start_y = None, None
+    for y_coord, line in enumerate(lines):
+        for x_coord, character in enumerate(line):
+            if character == '#':
+                obstacle_set.add((x_coord, y_coord))
+            elif character == '^':
+                start_x, start_y = x_coord, y_coord
+    return obstacle_set, start_x, start_y, len(lines[0]), len(lines)
 
-def parse_input(file_path: Path) -> list[list[str]]:
-    with Path.open(file_path, "r") as f:
-        grid: list[list[str]] = [list(line.strip()) for line in f.readlines()]
-    return grid
+def part1(obstacle_set, start_x, start_y, x_bound, y_bound):
+    directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+    visited_cells = set()
+    direction_index = 0
+    current_x, current_y = start_x, start_y
 
-
-def simulate_patrol(grid: list[list[str]]) -> int:
-    directions = {"^": (-1, 0), ">": (0, 1), "v": (1, 0), "<": (0, -1)}
-    turns = {"^": ">", ">": "v", "v": "<", "<": "^"}
-
-    guard_pos: tuple[int, int] | None = None
-    guard_dir: str | None = None
-
-    for r, row in enumerate(grid):
-        for c, cell in enumerate(row):
-            if cell in directions:
-                guard_pos = (r, c)
-                guard_dir = cell
-                grid[r][c] = "."
-                break
-        if guard_pos and guard_dir:
-            break
-
-    if not guard_pos:
-        return 0
-
-    visited = set()
-    visited.add(guard_pos)
-    rows, cols = len(grid), len(grid[0])
-
-    while True:
-        dr, dc = directions[guard_dir]
-        nr, nc = guard_pos[0] + dr, guard_pos[1] + dc
-
-        if not (0 <= nr < rows and 0 <= nc < cols):
-            break
-
-        if grid[nr][nc] == "#":
-            guard_dir = turns[guard_dir]
+    while 0 <= current_x < x_bound and 0 <= current_y < y_bound:
+        visited_cells.add((current_x, current_y))
+        delta_x, delta_y = directions[direction_index]
+        if (current_x + delta_x, current_y + delta_y) in obstacle_set:
+            direction_index = (direction_index + 1) % 4
         else:
-            guard_pos = (nr, nc)
-            visited.add(guard_pos)
+            current_x += delta_x
+            current_y += delta_y
 
-    return len(visited)
+    return len(visited_cells), visited_cells
 
+def part2(obstacle_set, start_x, start_y, visited_cells, x_bound, y_bound):
+    directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+    obstruction_count = 0
 
-grid = parse_input(Path("advent_2024/6_input.txt"))
-distinct_positions: int = simulate_patrol(grid)
-print(f"Distinct positions visited: {distinct_positions}")
+    for potential_obstacle in visited_cells:
+        temporary_obstacles = obstacle_set | {potential_obstacle}
+        direction_index = 0
+        temp_visited_states = set()
+        current_x, current_y = start_x, start_y
+
+        while 0 <= current_x < x_bound and 0 <= current_y < y_bound:
+            delta_x, delta_y = directions[direction_index]
+            if (current_x + delta_x, current_y + delta_y) in temporary_obstacles:
+                if (current_x, current_y, delta_x, delta_y) in temp_visited_states:
+                    obstruction_count += 1
+                    break
+                temp_visited_states.add((current_x, current_y, delta_x, delta_y))
+                direction_index = (direction_index + 1) % 4
+            else:
+                current_x += delta_x
+                current_y += delta_y
+
+    return obstruction_count
+
+def main():
+    file_path = Path('advent_2024/6_input.txt')
+    obstacle_set, start_x, start_y, x_bound, y_bound = parse_input(file_path)
+
+    part1_result, visited_cells = part1(obstacle_set, start_x, start_y, x_bound, y_bound)
+    print(f"Part 1: {part1_result}")
+
+    part2_result = part2(obstacle_set, start_x, start_y, visited_cells, x_bound, y_bound)
+    print(f"Part 2: {part2_result}")
+
+if __name__ == "__main__":
+    main()
