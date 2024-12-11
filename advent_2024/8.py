@@ -17,9 +17,6 @@ EXAMPLE = """............
 REAL_IN = Path("advent_2024/8_input.txt").read_text()
 
 
-
-
-
 def part1(input: list[list[str]]) -> int:
     antinodes = set()
     seen_frequencies = set()
@@ -30,7 +27,6 @@ def part1(input: list[list[str]]) -> int:
             elif cell.isalnum():
                 pass
             # there is probably a faster way. will think about it
-                
 
 
 def part2(input: str) -> int:
