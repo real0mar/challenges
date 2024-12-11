@@ -13,7 +13,7 @@ EXAMPLE = """190: 10 19
 REAL_IN = Path("advent_2024/7_input.txt").read_text()
 
 
-def evaluate_truth(expression: str) -> int:
+def evaluate_truth(expression: str, concat=False) -> int:
     """Evaluates whether a given expression can achieve a target value using a combination of addition and multiplication.
     The expression is a string formatted as "target:n1 n2 n3 ...", where "target" is the integer value to achieve,
     and "n1 n2 n3 ..." are the integers that can be used in the operations.
@@ -37,8 +37,15 @@ def evaluate_truth(expression: str) -> int:
         if index == len(numbers):
             return current_value == target
 
-        return helper(index + 1, current_value + numbers[index]) or helper(
-            index + 1, current_value * numbers[index]
+        if not concat:
+            return helper(index + 1, current_value + numbers[index]) or helper(
+                index + 1, current_value * numbers[index]
+            )
+
+        return helper(index + 1, current_value * numbers[index]) or helper(
+            index + 1,
+            current_value + numbers[index]
+            or helper(index + 1, int(str(current_value) + str(numbers[index]))),
         )
 
     if helper(1, numbers[0]):
@@ -50,10 +57,15 @@ def part1(input: str) -> int:
     return sum(evaluate_truth(expression) for expression in input.split("\n"))
 
 
-def part2(input: str) -> None:
-    pass
+def part2(input: str) -> int:
+    return sum(
+        evaluate_truth(expression, concat=True) for expression in input.split("\n")
+    )
 
 
 if __name__ == "__main__":
     assert part1(EXAMPLE) == 3749
+    assert part2(EXAMPLE) == 11387
+
     print(part1(REAL_IN))
+    print(part2(REAL_IN))
