@@ -5,20 +5,14 @@ example_blocks = "00...111...2...333.44.5555.6666.777.888899"
 example_compacted = "0099811188827773336446555566.............."
 
 
-def show_blocks(map: str) -> list[int | str]:
-    is_block = True
-    block_number: int = 0
+def show_blocks(disk_map: str) -> list[int | str]:
     blocks: list[str | int] = []
-    while map:
-        if is_block:
-            blocks.extend([block_number] * int(map[0]))
-            map = map[1:]
-            is_block = False
-        else:
-            blocks.extend(["."] * int(map[0]))
-            is_block = True
+    block_number = 0
+    for i in range(0, len(disk_map), 2):
+        blocks.extend([block_number] * int(disk_map[i]))
+        if i + 1 < len(disk_map):
+            blocks.extend(["."] * int(disk_map[i + 1]))
             block_number += 1
-            map = map[1:]
     return blocks
 
 
@@ -39,61 +33,47 @@ def compact1(blocks: list[int | str]) -> list[int | str]:
 
 
 def compact2(blocks: list[int | str]) -> list[int | str]:
-    file_lengths: dict[int | str, int] = {}
-    for i, file_id in enumerate(blocks):
-        if file_id != ".":
-            if file_id not in file_lengths:
-                file_lengths[file_id] = 0
-            file_lengths[file_id] += 1
-
-    max_file_id = 0
-    for file_id in file_lengths:
-        if isinstance(file_id, int) and file_id > max_file_id:
-            max_file_id = file_id
+    file_lengths = {
+        file_id: blocks.count(file_id) for file_id in set(blocks) if file_id != "."
+    }
+    max_file_id = max(
+        (file_id for file_id in file_lengths if isinstance(file_id, int)), default=-1
+    )
 
     for file_id in range(max_file_id, -1, -1):
         if file_id not in file_lengths:
             continue
 
         file_length = file_lengths[file_id]
-        file_start = -1
-        for i in range(len(blocks)):
-            if blocks[i] == file_id:
-                file_start = i
-                break
+        file_start = next((i for i, block in enumerate(blocks) if block == file_id), -1)
         if file_start == -1:
             continue
 
-        best_free_start = -1
-        for i in range(file_start):
-            if blocks[i] == ".":
-                free_space = 0
-                for j in range(i, len(blocks)):
-                    if blocks[j] == ".":
-                        free_space += 1
-                    else:
-                        break
-                if free_space >= file_length:
-                    best_free_start = i
-                    break
+        best_free_start = next(
+            (
+                i
+                for i in range(file_start)
+                if blocks[i : i + file_length] == ["."] * file_length
+            ),
+            -1,
+        )
 
         if best_free_start != -1:
-            for i in range(file_length):
-                blocks[best_free_start + i] = file_id
-            for i in range(file_start, len(blocks)):
-                if blocks[i] == file_id:
-                    blocks[i] = "."
+            blocks[best_free_start : best_free_start + file_length] = [
+                file_id
+            ] * file_length
+            blocks = [
+                "." if block == file_id and i >= file_start else block
+                for i, block in enumerate(blocks)
+            ]
 
     return blocks
 
 
 def checksum(compact_blocks: list[int | str]) -> int:
-    checksum = 0
-    for pos, char in enumerate(compact_blocks):
-        if char == ".":
-            continue
-        checksum += pos * int(char)
-    return checksum
+    return sum(
+        pos * int(char) for pos, char in enumerate(compact_blocks) if char != "."
+    )
 
 
 if __name__ == "__main__":
