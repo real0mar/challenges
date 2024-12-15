@@ -62,11 +62,9 @@ def part2(
             locations.update([pos1, pos2])
 
             if dX == 0:
-                for i in range(bounds):
-                    locations.add((i, pos1[1]))
+                locations.update((i, pos1[1]) for i in range(bounds))
             elif dY == 0:
-                for i in range(bounds):
-                    locations.add((pos1[0], i))
+                locations.update((pos1[0], i) for i in range(bounds))
             else:
                 gcd = math.gcd(dX, dY)
                 dX //= gcd
