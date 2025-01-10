@@ -16,13 +16,16 @@ test_grid2 = [
 
 
 def numIslands(grid: list[list[str]]) -> int:
-    
+
     def bfs(row: int, col: int):
-        queue = deque([(row, col)]) # Use collections.deque() for performance when using a queue NOT as a stack (popping from left)
+        queue = deque([(row, col)])
+        # Use collections.deque() for performance when using a queue NOT as a stack (popping from left)
         while queue:
-            r, c = queue.popleft() # if I change this to pop() it becomes depth first search
+            r, c = queue.popleft()
+            # if I change this to pop() it becomes depth first search
             if 0 <= r < rows and 0 <= c < cols and grid[r][c] == "1":
-                grid[r][c] = "0" # don't have to track visits this time, can just map all visits to 0
+                grid[r][c] = "0"
+                # don't have to track visits this time, can just map all visits to 0
                 queue.extend([(r, c - 1), (r, c + 1), (r - 1, c), (r + 1, c)])
 
     if not grid:
