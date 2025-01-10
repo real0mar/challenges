@@ -18,7 +18,7 @@ for line in lines:
 
 
 def build_graph(
-    rules: list[tuple[int, int]]
+    rules: list[tuple[int, int]],
 ) -> tuple[dict[int, list[int]], dict[int, int]]:
     graph: dict[int, list[int]] = defaultdict(list)
     in_degree: dict[int, int] = defaultdict(int)

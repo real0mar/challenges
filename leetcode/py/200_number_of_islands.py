@@ -17,7 +17,7 @@ test_grid2 = [
 
 def numIslands(grid: list[list[str]]) -> int:
 
-    def bfs(row: int, col: int):
+    def search(row: int, col: int) -> None:
         queue = deque([(row, col)])
         # Use collections.deque() for performance when using a queue NOT as a stack (popping from left)
         while queue:
@@ -38,7 +38,7 @@ def numIslands(grid: list[list[str]]) -> int:
         for col in range(cols):
             if grid[row][col] == "1":
                 islands += 1
-                bfs(row, col)
+                search(row, col)
 
     return islands
 
