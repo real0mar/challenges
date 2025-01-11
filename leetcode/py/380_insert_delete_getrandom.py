@@ -28,7 +28,7 @@ class RandomizedSet:
         return True
 
     def getRandom(self) -> int:
-        return random.choice(self.vals) # ignore: S311
+        return random.choice(self.vals)  # ignore: S311
 
 
 # Your RandomizedSet object will be instantiated and called as such:
