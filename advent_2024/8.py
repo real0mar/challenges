@@ -12,7 +12,7 @@ def create_mapping(data: list[list[str]]) -> dict[tuple[int, int], str]:
 
 
 def get_antenna_info(
-    mapping: dict[tuple[int, int], str],
+    mapping: dict[tuple[int, int], str]
 ) -> dict[str, list[tuple[int, int]]]:
     antenna_info: dict[str, list[tuple[int, int]]] = {}
     for (i, j), value in mapping.items():
