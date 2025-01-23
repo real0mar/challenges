@@ -1,4 +1,5 @@
 from collections import defaultdict
+from math import log10
 
 real_input = [
     int(x) for x in ["6571", "0", "5851763", "526746", "23", "69822", "9", "989"]
@@ -8,27 +9,28 @@ example_output = [int(x) for x in ["1", "2024", "1", "0", "9", "9", "2021976"]]
 
 
 def blink(wall: list[int]) -> list[int]:
+    """Processes a list of integers based on specific rules."""
     blinked: list[int] = []
     for stone in wall:
+        split_result = split_digits(stone)
         if stone == 0:
             blinked.append(1)
-        elif len(str(stone)) % 2 == 0:
-            str_stone = str(stone)
-            mid = len(str_stone) // 2
-            blinked.append(int(str(stone)[:mid]))
-            blinked.append(int(str(stone)[mid:]))
+        elif split_result:
+            blinked.extend(split_result)
         else:
             blinked.append(stone * 2024)
     return blinked
 
 
 def blinks(wall: list[int], iterations: int) -> list[int]:
+    """Performs multiple iterations of the blink operation."""
     for _ in range(iterations):
         wall = blink(wall)
     return wall
 
 
 def solve(nums: list[int], iterations: int) -> int:
+    """Simulates the transformation over a given number of iterations."""
     counts: defaultdict[int, int] = defaultdict(int)
 
     # Initialize counts with input numbers
@@ -39,16 +41,15 @@ def solve(nums: list[int], iterations: int) -> int:
         next_counts: defaultdict[int, int] = defaultdict(int)
 
         for num, count in counts.items():
+            split_result = split_digits(num)
             if num == 0:
                 next_counts[1] += count
+            elif split_result:
+                a, b = split_result
+                next_counts[a] += count
+                next_counts[b] += count
             else:
-                split_result = split_digits(num)
-                if split_result:
-                    a, b = split_result
-                    next_counts[a] += count
-                    next_counts[b] += count
-                else:
-                    next_counts[num * 2024] += count
+                next_counts[num * 2024] += count
 
         counts = next_counts
 
@@ -56,7 +57,10 @@ def solve(nums: list[int], iterations: int) -> int:
 
 
 def split_digits(num: int) -> tuple[int, int] | None:
-    digits = len(str(num))
+    """Splits an even-length number into two halves; otherwise, returns None."""
+    if num == 0:
+        return None
+    digits = int(log10(num)) + 1 if num > 0 else 1
     if digits % 2 != 0:
         return None
     half = digits // 2
