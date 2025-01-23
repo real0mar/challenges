@@ -8,9 +8,9 @@ def find_triplets(max_length: int) -> int:
         n = 1
         while n < m:
             if (m + n) % 2 == 1 and gcd(m, n) == 1:
-                a = m ** 2 - n ** 2
+                a = m**2 - n**2
                 b = 2 * m * n
-                c = m ** 2 + n ** 2
+                c = m**2 + n**2
                 sum_abc = a + b + c
 
                 diff = abs(b - a)
