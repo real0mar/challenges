@@ -1,8 +1,31 @@
 from collections import deque
+from pathlib import Path
 
 Cell = tuple[int, int]
 Grid = list[list[str]]
 Region = tuple[str, list[Cell]]
+
+map1 = """AAAA
+BBCD
+BBCC
+EEEC"""
+
+map2 = """OOOOO
+OXOXO
+OOOOO
+OXOXO
+OOOOO"""
+
+map3 = """RRRRIICCFF
+RRRRIICCCF
+VVRRRCCFFF
+VVRCCCJFFF
+VVVVCJJCFE
+VVIVCCJJEE
+VVIIICJJEE
+MIIIIIJJEE
+MIIISIJEEE
+MMMISSJEEE"""
 
 
 def parse_map(map_str: str) -> Grid:
@@ -57,7 +80,7 @@ def calculate_perimeter(grid: Grid, region_cells: list[Cell]) -> int:
     return perimeter
 
 
-def calculate_total_fencing_cost(map_str: str) -> int:
+def fencing_cost(map_str: str, debug: bool = False) -> int:
     grid: Grid = parse_map(map_str)
     regions = find_regions(grid)
     total_cost = 0
@@ -65,46 +88,19 @@ def calculate_total_fencing_cost(map_str: str) -> int:
         area = len(cells)
         perimeter = calculate_perimeter(grid, cells)
         cost = area * perimeter
-        print(
-            f"Region '{plant_type}': Area = {area}, Perimeter = {perimeter}, Cost = {cost}"
-        )
+        if debug:
+            print(
+                f"Region '{plant_type}': Area = {area}, Perimeter = {perimeter}, Cost = {cost}"
+            )
         total_cost += cost
-    print(f"Total fencing cost: {total_cost}")
+    if debug:
+        print(f"Total fencing cost: {total_cost}")
     return total_cost
 
 
-# First Example
-map1 = """AAAA
-BBCD
-BBCC
-EEEC"""
+assert fencing_cost(map1) == 140
+assert fencing_cost(map2) == 772
+assert fencing_cost(map3) == 1930
 
-print("First Example:")
-calculate_total_fencing_cost(map1)
-print("\n")
-
-# Second Example
-map2 = """OOOOO
-OXOXO
-OOOOO
-OXOXO
-OOOOO"""
-
-print("Second Example:")
-calculate_total_fencing_cost(map2)
-print("\n")
-
-# Larger Example
-map3 = """RRRRIICCFF
-RRRRIICCCF
-VVRRRCCFFF
-VVRCCCJFFF
-VVVVCJJCFE
-VVIVCCJJEE
-VVIIICJJEE
-MIIIIIJJEE
-MIIISIJEEE
-MMMISSJEEE"""
-
-print("Larger Example:")
-calculate_total_fencing_cost(map3)
+real_input = Path("advent_2024/12_input.txt").read_text()
+print(fencing_cost(real_input))
