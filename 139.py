@@ -1,29 +1,49 @@
-from math import gcd
+def words_to_number(words: str) -> int:
+    word_map = {
+        "one": 1,
+        "two": 2,
+        "three": 3,
+        "four": 4,
+        "five": 5,
+        "six": 6,
+        "seven": 7,
+        "eight": 8,
+        "nine": 9,
+        "ten": 10,
+        "eleven": 11,
+        "twelve": 12,
+        "thirteen": 13,
+        "fourteen": 14,
+        "fifteen": 15,
+        "sixteen": 16,
+        "seventeen": 17,
+        "eighteen": 18,
+        "nineteen": 19,
+        "twenty": 20,
+        "thirty": 30,
+        "forty": 40,
+        "fifty": 50,
+        "sixty": 60,
+        "seventy": 70,
+        "eighty": 80,
+        "ninety": 90,
+    }
+    multipliers = {"hundred": 100, "thousand": 1000, "million": 1000000}
 
+    words = words.lower().replace("-", " ")
+    tokens = words.split()
+    current = 0
+    total = 0
 
-def find_triplets(max_length: int) -> int:
-    num_valid = 0
-    m = 2
-    while 2 * m * m < max_length:
-        n = 1
-        while n < m:
-            if (m + n) % 2 == 1 and gcd(m, n) == 1:
-                a = m**2 - n**2
-                b = 2 * m * n
-                c = m**2 + n**2
-                sum_abc = a + b + c
+    for token in tokens:
+        if token == "and":
+            continue
+        if token in word_map:
+            current += word_map[token]
+        elif token in multipliers:
+            current *= multipliers[token]
+            if token != "hundred":
+                total += current
+                current = 0
 
-                diff = abs(b - a)
-
-                if diff > 0 and c % diff == 0:
-                    num_valid += max_length // sum_abc
-            n += 1
-        m += 1
-    return num_valid
-
-
-# Given perimeter limit
-perimeter_limit = 100_000_000
-valid_triples_count_fixed = find_triplets(perimeter_limit)
-
-print(valid_triples_count_fixed)
+    return total + current
