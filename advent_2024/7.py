@@ -14,7 +14,7 @@ EXAMPLE = """190: 10 19
 REAL_IN = Path("advent_2024/7_input.txt").read_text()
 
 
-def evaluate_truth(expression: str, concat=False) -> int:
+def evaluate_truth(expression: str, concat: bool = False) -> int:
     if not expression:
         return 0
     split = expression.split(":")

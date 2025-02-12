@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+
 def main():
     with open("advent_2024/12_input.txt") as f:
         grid = [list(line.strip()) for line in f]
@@ -20,19 +21,24 @@ def main():
                     region.append((r, c))
                     for dr, dc in [(-1, 0), (1, 0), (0, 1), (0, -1)]:
                         nr, nc = r + dr, c + dc
-                        if 0 <= nr < rows and 0 <= nc < cols and not visited[nr][nc] and grid[nr][nc] == current_type:
+                        if (
+                            0 <= nr < rows
+                            and 0 <= nc < cols
+                            and not visited[nr][nc]
+                            and grid[nr][nc] == current_type
+                        ):
                             visited[nr][nc] = True
                             queue.append((nr, nc))
                 horizontal_edges = defaultdict(list)
                 vertical_edges = defaultdict(list)
                 for r, c in region:
-                    if r == 0 or grid[r-1][c] != current_type:
+                    if r == 0 or grid[r - 1][c] != current_type:
                         horizontal_edges[r].append(c)
-                    if r == rows-1 or grid[r+1][c] != current_type:
-                        horizontal_edges[r+1].append(c)
-                    if c == cols-1 or grid[r][c+1] != current_type:
-                        vertical_edges[c+1].append(r)
-                    if c == 0 or grid[r][c-1] != current_type:
+                    if r == rows - 1 or grid[r + 1][c] != current_type:
+                        horizontal_edges[r + 1].append(c)
+                    if c == cols - 1 or grid[r][c + 1] != current_type:
+                        vertical_edges[c + 1].append(r)
+                    if c == 0 or grid[r][c - 1] != current_type:
                         vertical_edges[c].append(r)
                 horizontal_segments = 0
                 for y in horizontal_edges:
@@ -63,5 +69,6 @@ def main():
                 total += area * total_sides
     print(total)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

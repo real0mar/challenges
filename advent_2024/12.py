@@ -39,6 +39,8 @@ AAABBA
 ABBAAA
 ABBAAA
 AAAAAA"""
+
+
 def parse_map(map_str: str) -> Grid:
     return [list(line) for line in map_str.strip().split("\n")]
 
