@@ -16,7 +16,7 @@ right.sort()
 distance: int = sum(abs(a - b) for a, b in zip(left, right, strict=False))
 print(distance)
 
-right_counter: Counter = Counter(right)
+right_counter = Counter(right)
 
 similarity: int = 0
 for number in left:

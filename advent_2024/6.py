@@ -53,7 +53,7 @@ def part2(
     for potential_obstacle in visited_cells:
         temporary_obstacles = obstacle_set | {potential_obstacle}
         direction_index = 0
-        temp_visited_states = set()
+        temp_visited_states: set[tuple[int, int, int, int]] = set()
         current_x, current_y = start_x, start_y
 
         while 0 <= current_x < x_bound and 0 <= current_y < y_bound:
