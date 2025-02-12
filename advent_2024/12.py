@@ -169,6 +169,7 @@ def count_sides(grid: Grid, region_cells: list[Cell]) -> int:
         for (s, e) in ranges[1:]:
             if s == current_end:  # contiguous
                 # extend current run
+            if s == current_end:
                 current_end = e
             else:
                 # start new run
